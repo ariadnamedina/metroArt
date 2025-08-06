@@ -67,6 +67,68 @@ class Obra:
                 f"Título de obra: {self.titulo}\n"
                 f"Artista de la obra: {self.nombre_artista}\n"
                 f"Departamento: {self.departamento}")
+        
+class Apiconexion:
+    url = "https://collectionapi.metmuseum.org/public/collection/v1"
+
+    def conexion_api(self, endpoint, params=None):
+        url = f"{self.url}{endpoint}"
+        try:
+            response = requests.get(url, params=params)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            print(f"No se conecto a la api {url}: {e}")
+            return None
+
+    def apartamentos_por_id(self, department_id):
+        params = {"departmentId": department_id, "hasImages": "true"}
+        datos = self.conexion_api("/objects", params=params)
+        if datos and "objectIDs" in datos:
+            return datos["objectIDs"]
+        return []
+    
+    
+    def apartamentos(self):
+        departamento = self.conexion_api("/departments")
+        if departamento and "departments" in departamento:
+            lista_departamentos = []
+            for dat in departamento["departments"]:
+                nuevo_departamento = Departamento(
+                    id=dat["departmentId"],
+                    nombre=dat["displayName"]
+                )
+                lista_departamentos.append(nuevo_departamento)
+            return lista_departamentos
+        return []
+    
+    def detalle_obra(self, object_id):
+        data = self.conexion_api(f"/objects/{object_id}")
+        if data and data.get("objectID"):
+            obra_de_arte = Obra(
+                id=data["objectID"],
+                titulo=data["title"],
+                nombre_artista=data["artistDisplayName"],
+                nacionalidad_artista=data["artistNationality"],
+                fecha_nacimiento_artista=data["artistBeginDate"],
+                fecha_muerte_artista=data["artistEndDate"],
+                tipo=data["classification"],
+                anio_creacion=data["objectDate"],
+                departamento=data["department"],
+                url_imagen=data["primaryImage"]
+            )
+            return obra_de_arte
+        return None
+
+    def objetos_id(self, query):
+        params = {"q": query, "hasImages": "true"}
+        dato = self.conexion_api("/search", params=params)
+        if dato and "objectIDs" in dato:
+            return dato["objectIDs"]
+        return []
+
+    
+
 
     def mostrar_detalles(self):
         print("\n------ Detalles de la Obra de arte  -------")
@@ -89,6 +151,7 @@ def mostrar_menu():
     print("3. Salir")
     
 def main():
+    api = Apiconexion()
     while True:
         mostrar_menu()
         opcion = input("Ingrese una opción: ")
