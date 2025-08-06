@@ -46,6 +46,42 @@ def abrir_imagen(archivo):
     img = Image.open(archivo)
     img.show()
 
+class Obra:
+    def __init__(self, id, titulo, nombre_artista, nacionalidad_artista,
+                 fecha_nacimiento_artista, fecha_muerte_artista,
+                 tipo, anio_creacion, departamento,url_imagen):
+        self.id = id
+        self.titulo = titulo
+        self.nombre_artista = nombre_artista
+        self.nacionalidad_artista = nacionalidad_artista
+        self.fecha_nacimiento_artista = fecha_nacimiento_artista
+        self.fecha_muerte_artista = fecha_muerte_artista
+        self.tipo = tipo
+        self.anio_creacion = anio_creacion
+        self.departamento = departamento
+        self.url_imagen = url_imagen
+        
+
+    def __str__(self):
+        return (f"Id: {self.id}\n"
+                f"Título de obra: {self.titulo}\n"
+                f"Artista de la obra: {self.nombre_artista}\n"
+                f"Departamento: {self.departamento}")
+
+    def mostrar_detalles(self):
+        print("\n------ Detalles de la Obra de arte  -------")
+        print(f"Id: {self.id}")
+        print(f"Título: {self.titulo}")
+        print(f"Artista: {self.nombre_artista}")
+        print(f"Nacionalidad: {self.nacionalidad_artista}")
+        print(f"Fecha de nacimiento: {self.fecha_nacimiento_artista}")
+        print(f"Fecha de muerte: {self.fecha_muerte_artista}")
+        print(f"Departamento: {self.departamento}")
+        print(f"Tipo: {self.tipo}")
+        print(f"Año de creación: {self.anio_creacion}")
+        print(f"URL de la imagen: {self.url_imagen}")
+        
+        
 def mostrar_menu():
     print("--- MetroArt ---")
     print("1 Ver lista de obras")
