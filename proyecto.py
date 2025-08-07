@@ -189,7 +189,61 @@ def busqueda_autor(nombre):
     print("-" * 20)
     
       
-        
+
+def busqueda_departamento(departamento):
+    departamentos = departamento.apartamentos()
+
+    print("\n--- Departamentos ---")
+    for depa in departamentos:
+        print(depa)
+
+
+    dep_id = int(input("Introduzca el id a buscar: "))
+    if not any(depa.id == dep_id for depa in departamentos):
+        print("id incorrecto")
+        return
+
+    print(f"\nse buscara el id: {dep_id} por favor espere")
+    object_ids = departamento.apartamentos_por_id(dep_id)
+    
+    if not object_ids:
+        print("este departamento no posee imagenes")
+        return
+    
+    print(f"Se encontraron {len(object_ids)} obras. ")
+    buscar=int(input("Cuantas desea ver:\n"))
+    for obj_id in object_ids[:buscar]:
+        obra = departamento.detalle_obra(obj_id)
+        if obra:
+            print("-" * 20)
+            print(obra)
+    print("-" * 20)
+
+
+def busqueda_nacionalidad(nacion):
+    nacionalidad = input("Ingrese la nacionalidad del autor (ej. 'American'): ").strip()
+    if not nacionalidad:
+        print("Debe ingresar una nacionalidad.")
+        return
+
+    print(f"\nBuscando obras de artistas con nacionalidad '{nacionalidad}'...")
+    query = f"artistNationality={nacionalidad}"
+    object_ids = nacion.objetos_id(query)
+    
+    if not object_ids:
+        print("No se encontraron obras para esa nacionalidad.")
+        return
+
+    print(f"Se encontraron {len(object_ids)} obras")
+    buscar=int(input("Cuantas desea ver:\n"))
+    for obj_id in object_ids[:buscar]:
+        obra = nacion.detalle_obra(obj_id)
+        if obra:
+            print("-" * 20)
+            print(obra)
+    print("-" * 20)
+
+      
 def mostrar_menu():
     print("--- MetroArt ---")
     print("1 Ver lista de obras")
@@ -210,9 +264,9 @@ def main():
             
             opcion2 = input("Ingrese una opción: ")
             if opcion2 == '1':
-                print("")
+                busqueda_departamento(api)
             elif opcion2 == '2':
-                print("")
+                busqueda_nacionalidad(api)
             elif opcion2 == '3':
                 busqueda_autor(api)
             elif opcion2 == '4':
